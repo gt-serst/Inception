@@ -17,25 +17,33 @@
 
 #CMD [ "nginx"]
 
+# FROM debian:buster
+
+# RUN apt -y update && apt -y upgrade
+# RUN apt install -y 	nginx \
+# 			openssl \
+# 			procps \
+# 			vim
+
+# RUN mkdir -p /etc/nginx/snippets/
+# RUN mkdir -p /vat/run/nginx/
+# RUN mkdir -p /var/www/html/wordpress
+
+# RUN chmod 755 -R /var/www/html/
+# RUN chown -R www-data:www-data /var/www/html/
+
+# COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
+
+# COPY ./tools/nginx.sh /usr/local/bin/
+
+# RUN chmod 777 -R /usr/local/bin/nginx.sh
+
+#CMD ["/usr/local/bin/nginx.sh"]
+
 FROM debian:buster
 
-RUN apt -y update && apt -y upgrade
-RUN apt install -y 	nginx \
-			openssl \
-			procps \
-			vim
+RUN apt update && apt upgrade -y && apt install -y nginx
 
-RUN mkdir -p /etc/nginx/snippets/
-RUN mkdir -p /vat/run/nginx/
-RUN mkdir -p /var/www/html/wordpress
+EXPOSE 443
 
-RUN chmod 755 -R /var/www/html/
-RUN chown -R www-data:www-data /var/www/html/
-
-COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
-
-COPY ./tools/nginx.sh /usr/local/bin/
-
-RUN chmod 777 -R /usr/local/bin/nginx.sh
-
-CMD ["/usr/local/bin/nginx.sh"]
+CMD ["nginx", "-g", "daemon off;"]

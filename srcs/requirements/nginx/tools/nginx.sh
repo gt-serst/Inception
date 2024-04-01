@@ -26,3 +26,7 @@ ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
 
 # start the nginx daemon
 nginx -g "daemon off;"
+
+openssl genpkey -algorithm RSA -out "/etc/ssl/private/nginx-selfsigned.key"
+openssl req -new -key "/etc/ssl/private/nginx-selfsigned.key" -out "/etc/ssl/certs/nginx-selfsigned.cst" -subj "/C=MO/L=MD/O=1337/OU=STUDENT/CN=gt-serst.42.fr"
+openssl x509 -req -in "/etc/ssl/certs/nginx-selfsigned.cst" -signkey "/etc/ssl/private/nginx-selfsigned.key" -out "/etc/ssl/certs/nginx-selfsigned.crt"
