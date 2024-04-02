@@ -18,15 +18,11 @@ openssl req -new -key "$private_key" -out "$certificate_signing_request" -subj "
 # Generate Self-Signed Certificate
 openssl x509 -req -in "$certificate_signing_request" -signkey "$private_key" -out "/etc/ssl/certs/nginx-selfsigned.crt"
 
-# set ssl_certificate in nginx snippets folder
+# Set ssl_certificate in nginx snippets folder
 echo "
 ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
 ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
 " > /etc/nginx/snippets/self-signed.conf
 
-# start the nginx daemon
+# Start the nginx daemon
 nginx -g "daemon off;"
-
-openssl genpkey -algorithm RSA -out "/etc/ssl/private/nginx-selfsigned.key"
-openssl req -new -key "/etc/ssl/private/nginx-selfsigned.key" -out "/etc/ssl/certs/nginx-selfsigned.cst" -subj "/C=MO/L=MD/O=1337/OU=STUDENT/CN=gt-serst.42.fr"
-openssl x509 -req -in "/etc/ssl/certs/nginx-selfsigned.cst" -signkey "/etc/ssl/private/nginx-selfsigned.key" -out "/etc/ssl/certs/nginx-selfsigned.crt"
