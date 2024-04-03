@@ -2,40 +2,65 @@ version: '3'
 
 services:
     nginx:
-        build:
-            context: .
-            dockerfile: requirements/nginx/Dockerfile
         container_name: nginx
-#       depends_on:
-#           - wordpress
-        ports:
-           - "443:443"
         volumes:
-            - ./requirements/nginx/conf/:/etc/nginx/conf.d/
-            - ./requirements/nginx/tools:/etc/nginx/ssl/
-            - /home/${USER}/simple_docker_nginx_html/public/html:/var/www/
-        restart: always
+        - wordpress:/var/www/wordpress
+        networks:
+        - inception
+        depends_on:
+        - wordpress
+        build:
+            context: requirements/nginx
+        image: nginx
+        env_file: .env
+        ports:
+        - "443:443"
+        restart: on-failure
 
     mariadb:
-        build:
-            context: .
-            dockerfile: requirements/mariadb/Dockerfile
-            args:
-                DB_NAME: "mariadb"
-                DB_USER: "gt-serst"
-                DB_PASS: "mariadbuser"
-                DB_ROOT: "mariadbroot"
         container_name: mariadb
-        ports:
-            - "3306:3306"
+        networks:
+        - inception
+        build:
+            context: requirements/mariadb
+        image: mariadb
+        env_file: .env
         volumes:
-            - ./requirements/mariadb/conf/:/etc/mysql/mariadb.cnf
-            - mariadb:/var/lib/mysql
-        restart: always
+        - mariadb:/var/lib/mysql
+        restart: unless-stopped
+        expose:
+        - "3306"
+
+    wordpress:
+        container_name: wordpress
+        env_file: .env
+        volumes:
+        - wordpress:/var/www/wordpress
+        networks:
+        - inception
+        build:
+            context: requirements/wordpress
+        image: wordpress
+        depends_on:
+        - mariadb
+        restart: on-failure
+        expose:
+        - "9000"
 
 volumes:
-  mariadb:
-    # driver: local
-    # driver_opts:
-    # type: 'none'
-    # o: 'bind'
+    wordpress:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: '/home/gt-serst/data/wordpress'
+    mariadb:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: '/home/gt-serst/data/mariadb'
+
+networks:
+    inception:
+        driver: bridge
