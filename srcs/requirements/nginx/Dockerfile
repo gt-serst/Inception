@@ -2,22 +2,18 @@ FROM debian:buster
 
 RUN apt -y update && apt -y upgrade
 RUN apt install -y 	nginx \
-			openssl \
-			procps \
-			vim
+					openssl \
+					vim
 
-RUN mkdir -p /etc/nginx/snippets/
-RUN mkdir -p /vat/run/nginx/
-RUN mkdir -p /var/www/html/wordpress
+RUN mkdir -p /etc/nginx/ssl
 
-RUN chmod 755 -R /var/www/html/
-RUN chown -R www-data:www-data /var/www/html/
+RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=gt-serst.42.fr"
 
-COPY ./conf/nginx.conf /etc/nginx/conf.d/nginx.conf
+RUN mkdir -p /var/run/nginx
 
-COPY ./tools/nginx.sh /usr/local/bin/
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-RUN chmod 777 -R /usr/local/bin/nginx.sh
+RUN chmod 755 /var/www/html
+RUN chown -R www-data:www-data /var/www/html
 
-ENTRYPOINT ["/usr/local/bin/nginx.sh"]
 CMD ["nginx", "-g", "daemon off;"]
