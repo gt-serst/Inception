@@ -1,8 +1,14 @@
-version : '3'
-
 services:
   nginx:
-    image: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx
     ports:
       - "443:443"
+    volumes:
+      - ./public/html:/var/www/html
     restart: always
+
+volumes:
+  nginx: {}

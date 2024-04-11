@@ -1,7 +1,6 @@
 all: build
 
 build:
-	@docker build -t nginx .
 	@docker-compose up -d
 
 fclean:
