@@ -9,6 +9,3 @@ services:
     volumes:
       - ./public/html:/var/www/html
     restart: always
-
-volumes:
-  nginx: {}
