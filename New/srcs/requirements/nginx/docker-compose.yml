@@ -1,3 +1,4 @@
+version: "3"
 services:
   nginx:
     build:
@@ -7,5 +8,5 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /public/html:/var/www/html
+      - ./public/html:/var/www/
     restart: always

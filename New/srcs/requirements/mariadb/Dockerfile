@@ -9,8 +9,10 @@ COPY /tools/mariadb.sh /usr/local/bin/
 
 RUN chmod 777 -R /usr/local/bin/mariadb.sh
 
+RUN mysql_install_db
+
 EXPOSE 3306
 
 ENTRYPOINT ["bash", "/usr/local/bin/mariadb.sh"]
 
-CMD ["mariadbd"]
+CMD ["mysqld_safe", "--bind-address=0.0.0.0"]
