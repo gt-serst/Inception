@@ -3,14 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # args:
-      #   MYSQL_NAME: ${MYSQL_DATABASE}
-      #   MYSQL_USER: ${MYSQL_USER}
-      #   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      #   MYSQL_ROOT: ${MYSQL_ROOT_PASSWORD}
     container_name: mariadb
     ports:
       - "3306:3306"
-    # volumes:
-    #   - db-volume:/var/lib/mysql
+    env_file:
+      - .env
+    volumes:
+      - db_volume:/var/lib/mysql
     restart: always
+
+volumes:
+  db_volume: {}
