@@ -16,7 +16,7 @@ services:
 volumes:
   mariadb:
     driver: local
-    driver _opts:
+    driver_opts:
       type: 'none'
       o: 'bind'
       device: '/home/test/data/mariadb'
