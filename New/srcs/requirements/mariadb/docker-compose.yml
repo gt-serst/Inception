@@ -3,6 +3,12 @@ services:
   mariadb:
     build:
       context: .
+      args:
+        - MYSQL_DATABASE
+        - MYSQL_ROOT
+        - MYSQL_ROOT_PASSWORD
+        - MYSQL_USER
+        - MYSQL_PASSWORD
       dockerfile: Dockerfile
     container_name: mariadb
     ports:

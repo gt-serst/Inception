@@ -8,13 +8,19 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress:/var/www/wordpress
+      - wordpress:/var/www/html/wordpress
     networks:
       - inception
     restart: on-failure
   mariadb:
     build:
       context: requirements/mariadb
+      args:
+        - MYSQL_DATABASE
+        - MYSQL_ROOT
+        - MYSQL_ROOT_PASSWORD
+        - MYSQL_USER
+        - MYSQL_PASSWORD
       dockerfile: Dockerfile
     container_name: mariadb
     ports:
@@ -29,6 +35,19 @@ services:
   wordpress:
     build:
       context: requirements/wordpress
+      args:
+        - MYWP_DATABASE
+        - MYWP_USER
+        - MYWP_PASSWORD
+        - MYWP_URL
+        - MYWP_ADMIN_USER
+        - MYWP_ADMIN_PASSWORD
+        - MYWP_ADMIN_EMAIL
+        - MYWP_EMAIL
+        - MYWP_SUB_USER
+        - MYWP_SUB_EMAIL
+        - MYWP_SUB_ROLE
+        - MYWP_SUB_PASSWORD
       dockerfile: Dockerfile
     container_name: wordpress
     ports:
@@ -36,7 +55,7 @@ services:
     env_file:
       - .env
     volumes:
-      - wordpress:/var/www/wordpress
+      - wordpress:/var/www/html/wordpress
     depends_on:
       - mariadb
     networks:
@@ -59,4 +78,4 @@ volumes:
 
 networks:
   inception:
-  driver: bridge
+    driver: bridge

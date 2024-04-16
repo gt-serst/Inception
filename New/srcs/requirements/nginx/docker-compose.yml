@@ -8,5 +8,5 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./public/html:/var/www/
+      - ./public/html:/var/www/html
     restart: always

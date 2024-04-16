@@ -1,5 +1,18 @@
 FROM debian:bullseye
 
+ARG MYWP_DATABASE \
+	MYWP_USER \
+	MYWP_PASSWORD \
+	MYWP_URL \
+	MYWP_ADMIN_USER \
+	MYWP_ADMIN_PASSWORD \
+	MYWP_ADMIN_EMAIL \
+	MYWP_EMAIL \
+	MYWP_SUB_USER \
+	MYWP_SUB_EMAIL \
+	MYWP_SUB_ROLE \
+	MYWP_SUB_PASSWORD
+
 RUN apt-get update \
 	&& apt-get upgrade \
 	&& apt-get install -y vim \
@@ -8,19 +21,19 @@ RUN apt-get update \
 	&& apt-get install -y php-fpm \
 	&& apt-get install -y php-mysql \
 	&& apt-get install -y mariadb-client \
-	&& wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www \
-	&& cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz \
-	&& chown -R root:root /var/www/wordpress \
 	&& wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 	&& chmod +x wp-cli.phar \
-	&& mv wp-cli.phar /usr/local/bin/wp
+	&& mv wp-cli.phar /usr/local/bin/wp \
+	&& mkdir /run/php
+
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
 COPY /tools/auto_config.sh /usr/local/bin
 
 RUN chmod 777 -R /usr/local/bin/auto_config.sh
 
-EXPOSE 9090
+EXPOSE 9000
 
 ENTRYPOINT ["bash", "usr/local/bin/auto_config.sh"]
 
-CMD ["/usr/sbin/php-fpm7.3", "-F"]
+CMD ["/usr/bin/php-fpm", "-F"]
