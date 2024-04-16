@@ -1,0 +1,24 @@
+version: '3'
+services:
+  wordpress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wordpress
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/wordpress
+    # depends_on:
+    #   - mariadb
+    restart: always
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/test/data/wordpress'
