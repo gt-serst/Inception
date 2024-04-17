@@ -1,30 +1,15 @@
 #!/bin/bash
 
-sql_database="mariadb"
-sql_user="gt-serst"
-sql_password="mariadbuser"
-sql_root_password="mariadbroot"
+service mariadb start
 
-# Start MySQL service
-service mysql start;
+mariadb -e "DROP USER IF EXISTS ''@'localhost'"
 
-# Create database if not exists
-mysql -e "CREATE DATABASE IF NOT EXISTS \`${sql_database}\`;"
+mariadb -e "DROP DATABASE IF EXISTS test"
 
-# Create user if not exists
-mysql -e "CREATE USER IF NOT EXISTS \`${sql_user}\`@'localhost' IDENTIFIED BY '${sql_password}';"
+mariadb -e "CREATE DATABASE $MYSQL_DATABASE"
 
-# Grant all privileges on database to user
-mysql -e "GRANT ALL PRIVILEGES ON \`${sql_database}\`.* TO \`${sql_user}\`@'%' IDENTIFIED BY '${sql_password}';"
+mariadb -e "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'"
 
-# Change root user password
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${sql_root_password}';"
+mariadb -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* to '$MYSQL_USER'@'%'"
 
-# Flush privileges to apply changes
-mysql -u root -p$sql_root_password -e "FLUSH PRIVILEGES;"
-
-# Shutdown MySQL service
-mysqladmin -u root -p$sql_root_password shutdown
-
-# Stop MySQL service
-service mysql stop
+mariadb -e "ALTER USER '$MYSQL_ROOT'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';FLUSH PRIVILEGES"

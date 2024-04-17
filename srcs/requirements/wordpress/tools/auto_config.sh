@@ -1,35 +1,40 @@
 #!/bin/bash
 
-# Create directory for PHP run-time files
-mkdir -p /run/php/
+# sleep 10
 
-# Sleep for 10 seconds to allow services to start
-sleep 10
+if [ ! -d "/var/www/html/wordpress" ]; then
+	mkdir -p /var/www/html/wordpress
+fi
 
-# Use WP-CLI to generate WordPress configuration file
-wp config create --allow-root \
-    --dbname=$SQL_DATABASE \
-    --dbuser=$SQL_USER \
-    --dbpass=$SQL_PASSWORD \
-    --dbhost=mariadb:3306 --path='/var/www/wordpress'
+cd /var/www/html/wordpress
+rm -rf /var/www/html/wordpress/*
 
-# Create directory for WordPress site files
-mkdir -p /var/www/html/gt-serst.42.fr/public_html
+if ! wp core is-installed 2>/dev/null; then
+	wp core download --version=6.4.3	--allow-root
 
-# Set ownership of WordPress files to www-data user and group
-chown -R www-data:www-data /var/www/html/gt-serst.42.fr/public_html
+	wp config create	--allow-root \
+						--dbname=$MYWP_DATABASE \
+						--dbuser=$MYWP_USER \
+						--dbpass=$MYWP_PASSWORD \
+						--dbhost=mariadb:3306 \
+						--path='/var/www/html/wordpress/'
 
-# Set ownership of WordPress files to www-data user and group
-chown www-data:www-data /var/www/html/gt-serst.42.fr/public_html
+	wp core install	--allow-root \
+					--url=$MYWP_URL \
+					--title="Hello World !" \
+					--admin_user=$MYWP_ADMIN_USER \
+					--admin_password=$MYWP_ADMIN_PASSWORD \
+					--admin_email=$MYWP_ADMIN_EMAIL
 
-# Change directory to WordPress site directory
-cd /var/www/html/gt-serst.42.fr/public_html
+	wp user create	--allow-root \
+					$MYWP_SUB_USER \
+					$MYWP_SUB_EMAIL \
+					--role=$MYWP_SUB_ROLE \
+					--user_pass=$MYWP_SUB_PASSWORD
 
-# Download WordPress core files using WP-CLI
-sudo -u www-data wp core download --allow-root
+	ln -s $(find /usr/sbin -name 'php-fpm*') /usr/bin/php-fpm
+else
+	echo "wordpress already downloaded"
+fi
 
-# Generate WordPress configuration file using WP-CLI
-sudo -u www-data wp core config --dbname=$SQL_DATABASE --dbuser=$SQL_USER --dbpass=$SQL_PASSWORD --dbhost=mariadb:3306 --dbprefix='wp_' --allow-root
-
-# Install WordPress using WP-CLI with provided configuration
-sudo -u www-data wp core install --url='https://gt-serst.42.fr' --title='Inception' --admin_user='gt-serst' --admin_password='wpadmin' --admin_email='gt-serst@student.s19.be' --allow-root
+exec "$@"

@@ -1,31 +1,40 @@
-FROM debian:buster
+FROM debian:bullseye
 
-RUN apt update && apt upgrade -y && apt install wget -y
+ARG MYWP_DATABASE \
+	MYWP_USER \
+	MYWP_PASSWORD \
+	MYWP_URL \
+	MYWP_ADMIN_USER \
+	MYWP_ADMIN_PASSWORD \
+	MYWP_ADMIN_EMAIL \
+	MYWP_EMAIL \
+	MYWP_SUB_USER \
+	MYWP_SUB_EMAIL \
+	MYWP_SUB_ROLE \
+	MYWP_SUB_PASSWORD
 
-RUN apt-get install -y php7.3 \
-						php-fpm \
-						php-mysql \
-						mariadb-client \
-						vim \
-						sudo
+RUN apt-get update \
+	&& apt-get upgrade \
+	&& apt-get install -y vim \
+	&& apt-get -y install wget \
+	&& apt-get install -y php7.3 \
+	&& apt-get install -y php-fpm \
+	&& apt-get install -y php-mysql \
+	&& apt-get install -y sendmail \
+	&& apt-get install -y mariadb-client \
+	&& wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+	&& chmod +x wp-cli.phar \
+	&& mv wp-cli.phar /usr/local/bin/wp \
+	&& mkdir /run/php
 
-RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
-RUN cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
-
-COPY ./conf/www.conf ./etc/php/7.3/fpm/pool.d/www.conf
-
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-
-RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
-
-RUN chown -R root:root /var/www/wordpress
-
-COPY ./tools/auto_config.sh /usr/local/bin/
+COPY /tools/auto_config.sh /usr/local/bin
 
 RUN chmod 777 -R /usr/local/bin/auto_config.sh
 
-ENTRYPOINT ["/usr/local/bin/auto_config.sh"]
+EXPOSE 9000
 
-CMD ["php-fpm7.3", "-F"]
+ENTRYPOINT ["bash", "usr/local/bin/auto_config.sh"]
+
+CMD ["/usr/bin/php-fpm", "-F"]

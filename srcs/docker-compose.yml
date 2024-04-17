@@ -1,66 +1,81 @@
 version: '3'
-
 services:
-    nginx:
-        container_name: nginx
-        volumes:
-        - wordpress:/var/www/wordpress
-        networks:
-        - inception
-        depends_on:
-        - wordpress
-        build:
-            context: requirements/nginx
-        image: nginx
-        env_file: .env
-        ports:
-        - "443:443"
-        restart: on-failure
-
-    mariadb:
-        container_name: mariadb
-        networks:
-        - inception
-        build:
-            context: requirements/mariadb
-        image: mariadb
-        env_file: .env
-        volumes:
-        - mariadb:/var/lib/mysql
-        restart: unless-stopped
-        expose:
-        - "3306"
-
-    wordpress:
-        container_name: wordpress
-        env_file: .env
-        volumes:
-        - wordpress:/var/www/wordpress
-        networks:
-        - inception
-        build:
-            context: requirements/wordpress
-        image: wordpress
-        depends_on:
-        - mariadb
-        restart: on-failure
-        expose:
-        - "9000"
+  nginx:
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    networks:
+      - inception
+    restart: on-failure
+  mariadb:
+    build:
+      context: requirements/mariadb
+      args:
+        - MYSQL_DATABASE
+        - MYSQL_ROOT
+        - MYSQL_ROOT_PASSWORD
+        - MYSQL_USER
+        - MYSQL_PASSWORD
+      dockerfile: Dockerfile
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - inception
+    restart: on-failure
+  wordpress:
+    build:
+      context: requirements/wordpress
+      args:
+        - MYWP_DATABASE
+        - MYWP_USER
+        - MYWP_PASSWORD
+        - MYWP_URL
+        - MYWP_ADMIN_USER
+        - MYWP_ADMIN_PASSWORD
+        - MYWP_ADMIN_EMAIL
+        - MYWP_EMAIL
+        - MYWP_SUB_USER
+        - MYWP_SUB_EMAIL
+        - MYWP_SUB_ROLE
+        - MYWP_SUB_PASSWORD
+      dockerfile: Dockerfile
+    container_name: wordpress
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+    restart: on-failure
 
 volumes:
-    wordpress:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: '/home/test/data/wordpress'
-    mariadb:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: '/home/test/data/mariadb'
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/test/data/mariadb
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/test/data/wordpress
 
 networks:
-    inception:
-        driver: bridge
+  inception:
+    driver: bridge
