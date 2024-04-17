@@ -20,6 +20,7 @@ RUN apt-get update \
 	&& apt-get install -y php7.3 \
 	&& apt-get install -y php-fpm \
 	&& apt-get install -y php-mysql \
+	&& apt-get install -y sendmail \
 	&& apt-get install -y mariadb-client \
 	&& wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 	&& chmod +x wp-cli.phar \

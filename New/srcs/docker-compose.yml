@@ -56,10 +56,10 @@ services:
       - .env
     volumes:
       - wordpress:/var/www/html/wordpress
-    depends_on:
-      - mariadb
     networks:
       - inception
+    depends_on:
+      - mariadb
     restart: on-failure
 
 volumes:

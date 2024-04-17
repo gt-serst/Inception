@@ -1,7 +1,7 @@
 FROM debian:bullseye
 
-RUN apt-get install \
-	&& apt-get update \
+RUN apt-get update\
+	&& apt-get upgrade \
 	&& apt-get install -y vim \
 	&& apt-get install -y nginx \
 	&& mkdir -p /etc/nginx/ssl \
