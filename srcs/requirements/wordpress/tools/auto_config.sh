@@ -9,7 +9,7 @@ rm -rf /var/www/html/wordpress/*
 
 if ! wp core is-installed 2>/dev/null; then
 
-	wp core download --version=6.4.3	--allow-root
+	wp core download	--allow-root
 
 	wp config create	--allow-root \
 						--dbname=$MYWP_DATABASE \
