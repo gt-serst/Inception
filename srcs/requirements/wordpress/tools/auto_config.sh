@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# sleep 10
-
 if [ ! -d "/var/www/html/wordpress" ]; then
 	mkdir -p /var/www/html/wordpress
 fi
@@ -10,6 +8,7 @@ cd /var/www/html/wordpress
 rm -rf /var/www/html/wordpress/*
 
 if ! wp core is-installed 2>/dev/null; then
+
 	wp core download --version=6.4.3	--allow-root
 
 	wp config create	--allow-root \
