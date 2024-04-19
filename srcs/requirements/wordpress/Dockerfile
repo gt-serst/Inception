@@ -15,7 +15,6 @@ ARG MYWP_DATABASE \
 
 RUN apt-get update \
 	&& apt-get upgrade \
-	&& apt-get install -y vim \
 	&& apt-get -y install wget \
 	&& apt-get install -y php7.4 \
 	&& apt-get install -y php7.4-fpm \
@@ -27,7 +26,7 @@ RUN apt-get update \
 	&& mv wp-cli.phar /usr/local/bin/wp \
 	&& mkdir /run/php
 
-COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY /conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
 COPY /tools/auto_config.sh /usr/local/bin
 

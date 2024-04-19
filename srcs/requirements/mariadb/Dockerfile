@@ -8,10 +8,9 @@ ARG MYSQL_DATABASE \
 
 RUN apt-get update \
 	&& apt-get upgrade \
-	&& apt-get install -y vim \
 	&& apt-get install -y mariadb-server
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
+COPY /conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
 COPY /tools/mariadb.sh /usr/local/bin/
 
