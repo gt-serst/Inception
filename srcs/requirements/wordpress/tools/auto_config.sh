@@ -43,6 +43,4 @@ else
 	echo "wordpress already downloaded"
 fi
 
-chmod 755 /var/www/html/wordpress/wp-comments-post.php
-
 exec /usr/bin/php-fpm -F
