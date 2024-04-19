@@ -2,6 +2,7 @@
 
 if [ ! -d "/var/www/html/wordpress" ]; then
 	mkdir -p /var/www/html/wordpress
+	chmod 777 -R /var/www/html/wordpress
 fi
 
 cd /var/www/html/wordpress
@@ -36,4 +37,4 @@ else
 	echo "wordpress already downloaded"
 fi
 
-exec "$@"
+exec /usr/bin/php-fpm -F

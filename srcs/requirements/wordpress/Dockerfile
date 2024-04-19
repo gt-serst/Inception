@@ -35,5 +35,3 @@ RUN chmod 777 -R /usr/local/bin/auto_config.sh
 EXPOSE 9000
 
 ENTRYPOINT ["bash", "usr/local/bin/auto_config.sh"]
-
-CMD ["/usr/bin/php-fpm", "-F"]
