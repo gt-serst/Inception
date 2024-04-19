@@ -32,9 +32,17 @@ if ! wp core is-installed 2>/dev/null; then
 					--role=$MYWP_SUB_ROLE \
 					--user_pass=$MYWP_SUB_PASSWORD
 
+	wp	--allow-root \
+		theme install astra --activate
+
+	wp	--allow-root \
+		plugin update --all
+
 	ln -s $(find /usr/sbin -name 'php-fpm*') /usr/bin/php-fpm
 else
 	echo "wordpress already downloaded"
 fi
+
+chmod 755 /var/www/html/wordpress/wp-comments-post.php
 
 exec /usr/bin/php-fpm -F
