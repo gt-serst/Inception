@@ -4,7 +4,7 @@ service mariadb start
 
 mariadb -e "DROP USER IF EXISTS ''@'localhost'"
 
-mariadb -e "DROP DATABASE IF EXISTS test"
+mariadb -e "DROP DATABASE IF EXISTS $MYSQL_DATABASE"
 
 mariadb -e "CREATE DATABASE $MYSQL_DATABASE"
 

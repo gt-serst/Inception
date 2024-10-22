@@ -18,6 +18,4 @@ RUN chmod 777 -R /usr/local/bin/mariadb.sh
 
 RUN /usr/local/bin/mariadb.sh
 
-EXPOSE 3306
-
 ENTRYPOINT ["mysqld_safe"]

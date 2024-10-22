@@ -24,8 +24,6 @@ services:
         - MYSQL_PASSWORD
       dockerfile: Dockerfile
     container_name: mariadb
-    ports:
-      - "3306:3306"
     env_file:
       - .env
     volumes:
@@ -51,8 +49,6 @@ services:
         - MYWP_SUB_PASSWORD
       dockerfile: Dockerfile
     container_name: wordpress
-    ports:
-      - "9000:9000"
     env_file:
       - .env
     volumes:
