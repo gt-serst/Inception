@@ -12,7 +12,10 @@ services:
       - wordpress:/var/www/html/wordpress
     networks:
       - inception
+    depends_on:
+      - wordpress
     restart: on-failure
+
   mariadb:
     build:
       context: requirements/mariadb
@@ -31,6 +34,7 @@ services:
     networks:
       - inception
     restart: on-failure
+
   wordpress:
     build:
       context: requirements/wordpress
